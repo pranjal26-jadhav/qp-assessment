@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
             OrderEntity orderEntity = new OrderEntity();
             orderEntity.setUserEntity(userEntity);
 
-            Set<OrderLineEntity> orderLineEntities = orderDto.getOrderLineDtoList()
+            Set<OrderLineEntity> orderLineEntities = orderDto.getOrders()
                     .stream()
                     .map(orderLine -> {
                         Long productId = orderLine.getProductId();
@@ -55,7 +55,11 @@ public class OrderServiceImpl implements OrderService {
                                 .orElseThrow(() -> new RuntimeException("Product with id does exist: " + productId));
                         int availableInventory = productEntity.getAvailableInventory();
 
-                        if (orderLine.getQuantity() > 0 && availableInventory >= orderLine.getQuantity()) {
+                        if (orderLine.getQuantity() <= 0) {
+                            throw new HttpException(HttpStatus.BAD_REQUEST,"Please select Quantity greater than 0");
+                        }
+
+                        if (availableInventory >= orderLine.getQuantity()) {
                             OrderLineEntity orderLineEntity = getOrderLineEntity(orderLine, productEntity);
                             orderLineEntity.setOrder(orderEntity);
                             total.set(total.get().add(orderLineEntity.getOrderLinePrice()));

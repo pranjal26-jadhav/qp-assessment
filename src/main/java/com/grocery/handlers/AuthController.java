@@ -2,9 +2,11 @@ package com.grocery.handlers;
 
 import com.grocery.dtos.GenerateJWTTokenDTO;
 import com.grocery.dtos.JwtTokenResponseDTO;
+import com.grocery.exceptionHandler.HttpException;
 import com.grocery.security.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,9 +38,8 @@ public class AuthController {
             return ResponseEntity.ok(JwtTokenResponseDTO.builder().jwtToken(jwtToken).build());
         } catch (Exception e) {
             log.error("Error in generating token: {}", e.getMessage(), e);
+            throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
-        //TODO: Need to handle exceptions
-        return null;
     }
 }
 

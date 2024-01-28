@@ -24,12 +24,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/token/generate-token").permitAll()
+                .antMatchers("/token/generate-token", "/v1/user") //TODO: for testing purpose v1/user is allowed remove it
+                .permitAll()
                 .anyRequest().authenticated()
                         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -39,14 +42,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationFilter();
     }
 
-    @Bean
-    public BCryptPasswordEncoder encoder(){
-        return new BCryptPasswordEncoder();
-    }
-
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(encoder());
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
 
     @Bean

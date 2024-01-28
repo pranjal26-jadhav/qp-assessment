@@ -1,20 +1,18 @@
 package com.grocery.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.grocery.entitites.OrderEntity;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
 public class OrderDto {
     private String orderId;
-    private List<OrderLineDto> orderLineDtoList;
+    private List<OrderLineDto> orders;
     private String userName;
     private BigDecimal orderAmount;
 
@@ -28,7 +26,7 @@ public class OrderDto {
                     orderLine.setQuantity(orderLineEntity.getQuantity());
                     return orderLine;
                 }).collect(Collectors.toList());
-        this.orderLineDtoList = orderLines;
+        this.orders = orderLines;
         this.orderAmount = orderEntity.getTotal_amount();
         return this;
     }

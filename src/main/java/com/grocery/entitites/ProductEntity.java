@@ -28,7 +28,7 @@ public class ProductEntity {
     private MeasurementUnitEntity measurementUnit;
 
     @Column(name = "price", nullable = false)
-    private BigDecimal price;
+    private BigDecimal price; //
 
     @Column(name = "available_inventory")
     private int availableInventory;
